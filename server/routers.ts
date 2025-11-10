@@ -6,6 +6,10 @@ import { z } from "zod";
 import * as db from "./db";
 import { invokeLLM } from "./_core/llm";
 import * as marketing from "./marketing";
+import * as agentMultiplication from "./agentMultiplication";
+import * as taskEngine from "./taskEngine";
+import * as distributedNetwork from "./distributedNetwork";
+import * as swotAnalysis from "./swotAnalysis";
 
 export const appRouter = router({
   system: systemRouter,
@@ -391,6 +395,104 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await db.getAuditTrail(input.entityType, input.entityId);
       }),
+  }),
+
+  // Singularity Expansion: Agent Swarm System
+  agentSwarm: router({
+    deploySwarm: protectedProcedure
+      .input(z.object({ domain: z.string(), swarmSize: z.number() }))
+      .mutation(async ({ input }) => {
+        return await agentMultiplication.deployAgentSwarm(input.domain, input.swarmSize);
+      }),
+    spawnAgent: protectedProcedure
+      .input(z.object({
+        parentAgentId: z.number(),
+        specializationFocus: z.string(),
+        mutationRate: z.number(),
+        targetIntelligence: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        return await agentMultiplication.spawnAgent(input);
+      }),
+    getLineage: protectedProcedure
+      .input(z.object({ agentId: z.number() }))
+      .query(async ({ input }) => {
+        return await agentMultiplication.getAgentLineage(input.agentId);
+      }),
+  }),
+
+  // Singularity Expansion: Task Engine
+  taskEngine: router({
+    decomposeTask: protectedProcedure
+      .input(z.object({
+        taskDescription: z.string(),
+        targetComplexity: z.number().optional(),
+        maxMicroTasks: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await taskEngine.decomposeTask(
+          input.taskDescription,
+          input.targetComplexity,
+          input.maxMicroTasks
+        );
+      }),
+    createHierarchy: protectedProcedure
+      .input(z.object({
+        projectId: z.number(),
+        decomposition: z.any(),
+      }))
+      .mutation(async ({ input }) => {
+        return await taskEngine.createTaskHierarchy(input.projectId, input.decomposition);
+      }),
+    matchTask: protectedProcedure
+      .input(z.object({ taskId: z.number() }))
+      .query(async ({ input }) => {
+        return await taskEngine.matchTaskToAssignee(input.taskId);
+      }),
+    getProgress: protectedProcedure
+      .input(z.object({ projectId: z.number() }))
+      .query(async ({ input }) => {
+        return await taskEngine.getProjectTaskProgress(input.projectId);
+      }),
+  }),
+
+  // Singularity Expansion: Distributed Network
+  distributedNetwork: router({
+    registerDevice: protectedProcedure
+      .input(z.object({
+        deviceId: z.string(),
+        deviceType: z.string(),
+        capabilities: z.any(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        return await distributedNetwork.registerDevice(
+          ctx.user.id,
+          input.deviceId,
+          input.deviceType,
+          input.capabilities
+        );
+      }),
+    getNetworkStats: publicProcedure.query(async () => {
+      return await distributedNetwork.getNetworkStats();
+    }),
+    getLeaderboard: publicProcedure
+      .input(z.object({ limit: z.number().optional() }))
+      .query(async ({ input }) => {
+        return await distributedNetwork.getDeviceLeaderboard(input.limit);
+      }),
+  }),
+
+  // Singularity Expansion: SWOT Analysis
+  swotAnalysis: router({
+    generateProfile: protectedProcedure.mutation(async ({ ctx }) => {
+      return await swotAnalysis.generateSWOTProfile(ctx.user.id);
+    }),
+    findOptimalTask: protectedProcedure.query(async ({ ctx }) => {
+      return await swotAnalysis.findOptimalTaskForUser(ctx.user.id);
+    }),
+    getGrowthTrajectory: protectedProcedure.query(async ({ ctx }) => {
+      return await swotAnalysis.getUserGrowthTrajectory(ctx.user.id);
+    }),
   }),
 });
 

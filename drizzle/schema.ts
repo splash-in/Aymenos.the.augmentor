@@ -35,6 +35,10 @@ export const agentTypes = mysqlTable("agentTypes", {
   icon: varchar("icon", { length: 50 }),
   capabilities: text("capabilities").notNull(), // JSON array of capabilities
   color: varchar("color", { length: 20 }).notNull(),
+  parentTypeId: int("parentTypeId"), // For agent inheritance/specialization
+  specializationLevel: int("specializationLevel").default(0), // 0=base, 1=specialized, 2=expert
+  domain: varchar("domain", { length: 100 }), // Professional domain
+  skillTags: text("skillTags"), // JSON array of skill tags
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -53,6 +57,11 @@ export const agents = mysqlTable("agents", {
   memory: text("memory"), // JSON object for agent memory
   performanceScore: int("performanceScore").default(100).notNull(),
   tasksCompleted: int("tasksCompleted").default(0).notNull(),
+  intelligenceLevel: int("intelligenceLevel").default(50), // 1-100 scale
+  learningRate: int("learningRate").default(50), // How fast agent evolves
+  successRate: int("successRate").default(100), // Percentage
+  parentAgentId: int("parentAgentId"), // For agent spawning/replication
+  generation: int("generation").default(1), // Agent generation number
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -197,3 +206,117 @@ export const userInteractions = mysqlTable("userInteractions", {
 
 export type UserInteraction = typeof userInteractions.$inferSelect;
 export type InsertUserInteraction = typeof userInteractions.$inferInsert;
+
+/**
+ * Tasks - Hierarchical task system for distributed work
+ */
+export const tasks = mysqlTable("tasks", {
+  id: int("id").autoincrement().primaryKey(),
+  parentTaskId: int("parentTaskId"), // For task hierarchy
+  projectId: int("projectId"),
+  title: varchar("title", { length: 300 }).notNull(),
+  description: text("description").notNull(),
+  taskType: mysqlEnum("taskType", ["micro", "small", "medium", "large", "epic"]).default("medium").notNull(),
+  complexity: int("complexity").default(50).notNull(), // 1-100 scale
+  requiredSkills: text("requiredSkills"), // JSON array of required skills
+  status: mysqlEnum("status", ["pending", "assigned", "in_progress", "completed", "failed"]).default("pending").notNull(),
+  result: text("result"),
+  gamifiedInterface: text("gamifiedInterface"), // JSON config for game-like presentation
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+
+export type Task = typeof tasks.$inferSelect;
+export type InsertTask = typeof tasks.$inferInsert;
+
+/**
+ * Task Assignments - Links tasks to agents or users
+ */
+export const taskAssignments = mysqlTable("taskAssignments", {
+  id: int("id").autoincrement().primaryKey(),
+  taskId: int("taskId").notNull(),
+  assigneeType: mysqlEnum("assigneeType", ["agent", "user", "device"]).notNull(),
+  assigneeId: int("assigneeId").notNull(),
+  assignedAt: timestamp("assignedAt").defaultNow().notNull(),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  contributionScore: int("contributionScore").default(0),
+});
+
+export type TaskAssignment = typeof taskAssignments.$inferSelect;
+export type InsertTaskAssignment = typeof taskAssignments.$inferInsert;
+
+/**
+ * Connected Devices - Smart devices in the distributed network
+ */
+export const connectedDevices = mysqlTable("connectedDevices", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),
+  deviceId: varchar("deviceId", { length: 200 }).notNull().unique(),
+  deviceType: varchar("deviceType", { length: 100 }).notNull(), // phone, tablet, computer, iot, etc.
+  capabilities: text("capabilities"), // JSON array of device capabilities
+  computePower: int("computePower").default(50), // 1-100 scale
+  status: mysqlEnum("status", ["online", "offline", "busy"]).default("offline").notNull(),
+  tasksCompleted: int("tasksCompleted").default(0).notNull(),
+  contributionScore: int("contributionScore").default(0).notNull(),
+  lastSeenAt: timestamp("lastSeenAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ConnectedDevice = typeof connectedDevices.$inferSelect;
+export type InsertConnectedDevice = typeof connectedDevices.$inferInsert;
+
+/**
+ * User Profiles - SWOT analysis and capability tracking
+ */
+export const userProfiles = mysqlTable("userProfiles", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  strengths: text("strengths"), // JSON array of identified strengths
+  weaknesses: text("weaknesses"), // JSON array of weaknesses
+  opportunities: text("opportunities"), // JSON array of growth opportunities
+  threats: text("threats"), // JSON array of potential blockers
+  cognitiveScore: int("cognitiveScore").default(50), // 1-100 scale
+  creativityScore: int("creativityScore").default(50),
+  technicalScore: int("technicalScore").default(50),
+  socialScore: int("socialScore").default(50),
+  potentialQuotient: int("potentialQuotient").default(50), // Gap between current and max potential
+  preferredTaskTypes: text("preferredTaskTypes"), // JSON array
+  skillTags: text("skillTags"), // JSON array of user skills
+  contributionScore: int("contributionScore").default(0).notNull(),
+  tasksCompleted: int("tasksCompleted").default(0).notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserProfile = typeof userProfiles.$inferSelect;
+export type InsertUserProfile = typeof userProfiles.$inferInsert;
+
+/**
+ * Agent Spawning Log - Track agent replication and evolution
+ */
+export const agentSpawns = mysqlTable("agentSpawns", {
+  id: int("id").autoincrement().primaryKey(),
+  parentAgentId: int("parentAgentId").notNull(),
+  childAgentId: int("childAgentId").notNull(),
+  spawnReason: text("spawnReason"), // Why this agent was spawned
+  inheritedCapabilities: text("inheritedCapabilities"), // JSON array
+  mutations: text("mutations"), // JSON array of capability changes
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AgentSpawn = typeof agentSpawns.$inferSelect;
+export type InsertAgentSpawn = typeof agentSpawns.$inferInsert;
+
+/**
+ * Skill Chains - Track how task outputs connect to inputs
+ */
+export const skillChains = mysqlTable("skillChains", {
+  id: int("id").autoincrement().primaryKey(),
+  sourceTaskId: int("sourceTaskId").notNull(),
+  targetTaskId: int("targetTaskId").notNull(),
+  dataFlow: text("dataFlow"), // JSON describing what data flows between tasks
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SkillChain = typeof skillChains.$inferSelect;
+export type InsertSkillChain = typeof skillChains.$inferInsert;

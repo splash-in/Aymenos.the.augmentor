@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import SwarmViz from "./pages/SwarmViz";
 import Dashboard from "./pages/Dashboard";
 import Marketing from "./pages/Marketing";
 
@@ -13,6 +14,7 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path="/swarm" component={SwarmViz} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/marketing" component={Marketing} />
       <Route path={"/404"} component={NotFound} />
