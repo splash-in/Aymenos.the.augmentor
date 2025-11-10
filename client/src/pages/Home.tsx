@@ -24,21 +24,11 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 
+import { trpc } from "@/lib/trpc";
+
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
-
-  const agentTypes = [
-    { icon: Code, name: "Developer", color: "bg-blue-500" },
-    { icon: Server, name: "DevOps", color: "bg-purple-500" },
-    { icon: Calculator, name: "Accountant", color: "bg-green-500" },
-    { icon: Gamepad2, name: "Game Designer", color: "bg-amber-500" },
-    { icon: Users, name: "Politician", color: "bg-red-500" },
-    { icon: Scale, name: "Lawyer", color: "bg-indigo-500" },
-    { icon: Stethoscope, name: "Doctor", color: "bg-pink-500" },
-    { icon: Cog, name: "Engineer", color: "bg-teal-500" },
-    { icon: Brain, name: "Psychotherapist", color: "bg-violet-500" },
-    { icon: GraduationCap, name: "Tutor", color: "bg-cyan-500" },
-  ];
+  const { data: agentTypes } = trpc.agentTypes.list.useQuery();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white">
@@ -216,26 +206,44 @@ export default function Home() {
             Your AI Augmentation Team
           </h2>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-            Ten specialized agent types covering every professional domain, ready to collaborate 
+            {agentTypes?.length || 60}+ specialized agent types covering every professional domain, ready to collaborate 
             with you and learn from billions of interactions.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-          {agentTypes.map((agent, idx) => (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 max-h-[600px] overflow-y-auto">
+          {agentTypes?.slice(0, 20).map((agent: any) => (
             <Card 
-              key={idx}
+              key={agent.id}
               className="bg-slate-900/50 border-slate-700/50 backdrop-blur-xl p-6 hover:border-cyan-500/50 transition-all cursor-pointer group"
             >
-              <div className={`${agent.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                <agent.icon className="w-6 h-6 text-white" />
+              <div 
+                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform text-2xl"
+                style={{ backgroundColor: `${agent.color}40` }}
+              >
+                {agent.icon || '🤖'}
               </div>
-              <h4 className="font-semibold text-white group-hover:text-cyan-300 transition-colors">
+              <h4 className="font-semibold text-white group-hover:text-cyan-300 transition-colors text-sm">
                 {agent.name}
               </h4>
+              {agent.domain && (
+                <Badge variant="secondary" className="mt-2 text-xs">
+                  {agent.domain}
+                </Badge>
+              )}
             </Card>
           ))}
         </div>
+        
+        {agentTypes && agentTypes.length > 20 && (
+          <div className="text-center mt-8">
+            <Link href="/dashboard">
+              <Button variant="outline" className="border-cyan-500/50 text-cyan-300">
+                View All {agentTypes.length} Agents <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* CTA Section */}

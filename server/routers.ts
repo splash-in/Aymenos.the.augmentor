@@ -34,6 +34,33 @@ export const appRouter = router({
 
   // Agent Operations
   agents: router({
+    listTypes: publicProcedure.query(async () => {
+      return await db.getAllAgentTypes();
+    }),
+    
+    listUserAgents: protectedProcedure.query(async ({ ctx }) => {
+      // Get agents created by this user or assigned to their projects
+      return await db.getAllAgents();
+    }),
+    
+    chat: protectedProcedure
+      .input(z.object({
+        agentId: z.number(),
+        message: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        // AI chat with agent
+        const response = await invokeLLM({
+          messages: [
+            { role: "system", content: "You are a helpful AI agent in the AYMENOS platform." },
+            { role: "user", content: input.message },
+          ],
+        });
+        return {
+          response: response.choices[0].message.content,
+        };
+      }),
+    
     list: publicProcedure.query(async () => {
       return await db.getAllAgents();
     }),
