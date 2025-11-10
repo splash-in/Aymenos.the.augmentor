@@ -538,17 +538,74 @@ export default function SwarmVisualization() {
                           {selectedAgent.status}
                         </Badge>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Position</span>
-                        <span className="text-white text-sm">
-                          ({Math.round(selectedAgent.x)}, {Math.round(selectedAgent.y)})
-                        </span>
+                    </div>
+
+                    {/* Current Task */}
+                    <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+                      <h4 className="text-purple-300 text-sm font-semibold mb-2 flex items-center gap-2">
+                        <Zap className="h-4 w-4" />
+                        Current Task
+                      </h4>
+                      <p className="text-white text-sm">
+                        {selectedAgent.status === 'active' 
+                          ? `Analyzing ${selectedAgent.type} patterns and optimizing workflow efficiency`
+                          : selectedAgent.status === 'busy'
+                          ? `Collaborating with other agents on complex ${selectedAgent.type} task`
+                          : 'Awaiting task assignment'}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <div className="flex-1 h-2 bg-black/40 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                            style={{ width: `${Math.random() * 40 + 60}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-400">{Math.floor(Math.random() * 40 + 60)}%</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Velocity</span>
-                        <span className="text-white text-sm">
-                          {Math.sqrt(selectedAgent.vx ** 2 + selectedAgent.vy ** 2).toFixed(2)}
-                        </span>
+                    </div>
+
+                    {/* Performance Metrics */}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-2 text-center">
+                        <CheckCircle className="h-4 w-4 text-green-400 mx-auto mb-1" />
+                        <div className="text-white font-semibold text-sm">{Math.floor(Math.random() * 500 + 100)}</div>
+                        <div className="text-xs text-gray-400">Tasks Done</div>
+                      </div>
+                      <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-2 text-center">
+                        <Activity className="h-4 w-4 text-blue-400 mx-auto mb-1" />
+                        <div className="text-white font-semibold text-sm">{Math.floor(Math.random() * 20 + 80)}%</div>
+                        <div className="text-xs text-gray-400">Success</div>
+                      </div>
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-2 text-center">
+                        <Users className="h-4 w-4 text-purple-400 mx-auto mb-1" />
+                        <div className="text-white font-semibold text-sm">{Math.floor(Math.random() * 30 + 10)}</div>
+                        <div className="text-xs text-gray-400">Collabs</div>
+                      </div>
+                    </div>
+
+                    {/* Recent Activity Log */}
+                    <div>
+                      <h4 className="text-white text-sm font-semibold mb-2 flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        Recent Activity
+                      </h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {[
+                          { time: '2m ago', action: 'Completed task analysis', color: 'text-green-400' },
+                          { time: '5m ago', action: 'Collaborated with DevOps Agent', color: 'text-blue-400' },
+                          { time: '8m ago', action: 'Started new optimization task', color: 'text-purple-400' },
+                          { time: '12m ago', action: 'Shared insights with swarm', color: 'text-cyan-400' },
+                          { time: '15m ago', action: 'Updated knowledge base', color: 'text-yellow-400' },
+                          { time: '18m ago', action: 'Received task assignment', color: 'text-pink-400' },
+                        ].map((activity, i) => (
+                          <div key={i} className="flex items-start gap-2 text-xs">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white/40 mt-1.5" />
+                            <div className="flex-1">
+                              <div className={`${activity.color} font-medium`}>{activity.action}</div>
+                              <div className="text-gray-500">{activity.time}</div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
