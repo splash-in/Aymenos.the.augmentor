@@ -295,7 +295,7 @@ export default function SwarmVisualization() {
     animate();
 
     return () => cancelAnimationFrame(animationId);
-  }, [isPlaying, agents, messages, particles, zoom, pan]);
+  }, [isPlaying, zoom, pan]);
 
   // Generate random messages
   useEffect(() => {
