@@ -106,24 +106,48 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            {!isAuthenticated && (
-              <Button 
-                size="lg"
-                onClick={() => window.location.href = getLoginUrl()}
-                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-lg px-8 py-6"
-              >
-                <Rocket className="mr-2 w-5 h-5" />
-                Launch AYMENOS
-              </Button>
+            {isAuthenticated ? (
+              <>
+                <Link href="/build">
+                  <Button 
+                    size="lg"
+                    className="bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 hover:from-purple-600 hover:via-pink-600 hover:to-cyan-600 text-lg px-8 py-6 font-bold"
+                  >
+                    <Sparkles className="mr-2 w-5 h-5" />
+                    Build & Pass - Start Creating
+                  </Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 text-lg px-8 py-6"
+                  >
+                    <Rocket className="mr-2 w-5 h-5" />
+                    Dashboard
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Button 
+                  size="lg"
+                  onClick={() => window.location.href = getLoginUrl()}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-lg px-8 py-6"
+                >
+                  <Rocket className="mr-2 w-5 h-5" />
+                  Launch AYMENOS
+                </Button>
+                <Button 
+                  size="lg"
+                  variant="outline"
+                  className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 text-lg px-8 py-6"
+                  onClick={() => document.getElementById('agents')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Explore Agents
+                </Button>
+              </>
             )}
-            <Button 
-              size="lg"
-              variant="outline"
-              className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 text-lg px-8 py-6"
-              onClick={() => document.getElementById('agents')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Explore Agents
-            </Button>
           </div>
         </div>
 

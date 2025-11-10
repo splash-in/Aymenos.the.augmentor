@@ -320,3 +320,107 @@ export const skillChains = mysqlTable("skillChains", {
 
 export type SkillChain = typeof skillChains.$inferSelect;
 export type InsertSkillChain = typeof skillChains.$inferInsert;
+
+
+/**
+ * Build Chains - Collaborative creation chains where work passes between contributors
+ */
+export const buildChains = mysqlTable("buildChains", {
+  id: int("id").autoincrement().primaryKey(),
+  originalCreatorId: int("originalCreatorId").notNull(),
+  title: varchar("title", { length: 300 }).notNull(),
+  description: text("description").notNull(),
+  projectType: varchar("projectType", { length: 100 }).notNull(), // app, website, research, design, etc.
+  status: mysqlEnum("status", ["in_progress", "completed", "abandoned"]).default("in_progress").notNull(),
+  currentOwnerId: int("currentOwnerId"), // Who currently has the work
+  finalProductUrl: text("finalProductUrl"),
+  totalContributors: int("totalContributors").default(1).notNull(),
+  completionPercentage: int("completionPercentage").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+
+export type BuildChain = typeof buildChains.$inferSelect;
+export type InsertBuildChain = typeof buildChains.$inferInsert;
+
+/**
+ * Chain Links - Individual contributions in a build chain
+ */
+export const chainLinks = mysqlTable("chainLinks", {
+  id: int("id").autoincrement().primaryKey(),
+  chainId: int("chainId").notNull(),
+  contributorId: int("contributorId").notNull(),
+  contributorType: mysqlEnum("contributorType", ["user", "agent"]).notNull(),
+  linkOrder: int("linkOrder").notNull(), // Position in chain (1, 2, 3...)
+  contributionType: varchar("contributionType", { length: 100 }).notNull(), // design, code, research, etc.
+  skillLevelRequired: int("skillLevelRequired").notNull(), // 1-100
+  workDescription: text("workDescription").notNull(),
+  workOutput: text("workOutput"), // What was produced
+  timeSpent: int("timeSpent"), // Minutes
+  completionPercentage: int("completionPercentage").notNull(), // How much of total project
+  qualityScore: int("qualityScore"), // 1-100
+  status: mysqlEnum("status", ["in_progress", "completed", "handed_off"]).default("in_progress").notNull(),
+  handoffReason: text("handoffReason"), // Why work was passed
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+
+export type ChainLink = typeof chainLinks.$inferSelect;
+export type InsertChainLink = typeof chainLinks.$inferInsert;
+
+/**
+ * Skill Assessments - Real-time skill proficiency tracking
+ */
+export const skillAssessments = mysqlTable("skillAssessments", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  skillCategory: varchar("skillCategory", { length: 100 }).notNull(),
+  proficiencyLevel: int("proficiencyLevel").notNull(), // 1-100
+  confidenceScore: int("confidenceScore").notNull(), // How confident AI is in assessment
+  assessmentMethod: varchar("assessmentMethod", { length: 100 }).notNull(), // observed, tested, self-reported
+  evidence: text("evidence"), // JSON array of supporting data
+  lastAssessedAt: timestamp("lastAssessedAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SkillAssessment = typeof skillAssessments.$inferSelect;
+export type InsertSkillAssessment = typeof skillAssessments.$inferInsert;
+
+/**
+ * Handoff Requests - When work needs to be passed to next contributor
+ */
+export const handoffRequests = mysqlTable("handoffRequests", {
+  id: int("id").autoincrement().primaryKey(),
+  chainId: int("chainId").notNull(),
+  fromUserId: int("fromUserId").notNull(),
+  toUserId: int("toUserId"), // Null if open to anyone
+  toAgentId: int("toAgentId"), // If passing to AI agent
+  requiredSkills: text("requiredSkills"), // JSON array
+  workContext: text("workContext").notNull(), // What's been done, what's needed
+  urgency: mysqlEnum("urgency", ["low", "medium", "high"]).default("medium").notNull(),
+  status: mysqlEnum("status", ["pending", "accepted", "rejected", "auto_assigned"]).default("pending").notNull(),
+  acceptedBy: int("acceptedBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  respondedAt: timestamp("respondedAt"),
+});
+
+export type HandoffRequest = typeof handoffRequests.$inferSelect;
+export type InsertHandoffRequest = typeof handoffRequests.$inferInsert;
+
+/**
+ * Contribution Credits - Fair attribution system
+ */
+export const contributionCredits = mysqlTable("contributionCredits", {
+  id: int("id").autoincrement().primaryKey(),
+  chainId: int("chainId").notNull(),
+  contributorId: int("contributorId").notNull(),
+  contributorType: mysqlEnum("contributorType", ["user", "agent"]).notNull(),
+  creditPercentage: int("creditPercentage").notNull(), // % of total project
+  contributionValue: int("contributionValue").notNull(), // Calculated value score
+  badges: text("badges"), // JSON array of earned badges
+  portfolioEligible: int("portfolioEligible").default(1).notNull(), // Can show in portfolio
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ContributionCredit = typeof contributionCredits.$inferSelect;
+export type InsertContributionCredit = typeof contributionCredits.$inferInsert;

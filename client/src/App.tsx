@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import SwarmViz from "./pages/SwarmViz";
 import Dashboard from "./pages/Dashboard";
 import Marketing from "./pages/Marketing";
+import BuildPass from "./pages/BuildPass";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/swarm" component={SwarmViz} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/marketing" component={Marketing} />
+      <Route path="/build" component={BuildPass} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -10,6 +10,7 @@ import * as agentMultiplication from "./agentMultiplication";
 import * as taskEngine from "./taskEngine";
 import * as distributedNetwork from "./distributedNetwork";
 import * as swotAnalysis from "./swotAnalysis";
+import * as buildPassEngine from "./buildPassEngine";
 
 export const appRouter = router({
   system: systemRouter,
@@ -493,6 +494,56 @@ export const appRouter = router({
     getGrowthTrajectory: protectedProcedure.query(async ({ ctx }) => {
       return await swotAnalysis.getUserGrowthTrajectory(ctx.user.id);
     }),
+  }),
+
+  // Build & Pass System - Revolutionary Feature
+  buildPass: router({
+    startChain: protectedProcedure
+      .input(z.object({
+        title: z.string(),
+        description: z.string(),
+        projectType: z.string(),
+        initialIdea: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await buildPassEngine.startBuildChain({
+          userId: ctx.user.id,
+          ...input,
+        });
+      }),
+    submitContribution: protectedProcedure
+      .input(z.object({
+        chainId: z.number(),
+        workDescription: z.string(),
+        workOutput: z.string(),
+        timeSpent: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await buildPassEngine.submitContribution({
+          userId: ctx.user.id,
+          ...input,
+        });
+      }),
+    acceptHandoff: protectedProcedure
+      .input(z.object({
+        chainId: z.number(),
+        contributorType: z.enum(["user", "agent"]),
+        contributorId: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        return await buildPassEngine.acceptHandoff(input);
+      }),
+    getChainHistory: protectedProcedure
+      .input(z.object({ chainId: z.number() }))
+      .query(async ({ input }) => {
+        return await buildPassEngine.getChainHistory(input.chainId);
+      }),
+    calculateCredits: protectedProcedure
+      .input(z.object({ chainId: z.number() }))
+      .mutation(async ({ input }) => {
+        await buildPassEngine.calculateCredits(input.chainId);
+        return { success: true };
+      }),
   }),
 });
 
