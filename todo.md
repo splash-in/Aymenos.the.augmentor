@@ -256,3 +256,13 @@
 - [x] Implement agent position synchronization
 - [x] Stream communication events in real-time
 - [x] Update statistics dynamically
+
+## Fix Missing Routes
+
+### Agents Page (/agents)
+- [x] Create agents listing page
+- [x] Display all 60+ agent types with cards
+- [x] Add search and filter functionality
+- [x] Implement agent deployment from listing
+- [x] Add agent details modal
+- [x] Register route in App.tsx
