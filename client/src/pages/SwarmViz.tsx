@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect } from "react";
-import { Activity, Cpu, Network, Zap, Users, Brain, TrendingUp } from "lucide-react";
+import { Activity, Cpu, Network, Zap, Users, Brain, TrendingUp, Eye } from "lucide-react";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
+import { Link } from "wouter";
 
 export default function SwarmViz() {
   const { user, loading, isAuthenticated } = useAuth();
@@ -269,6 +270,12 @@ export default function SwarmViz() {
                 <p className="text-gray-400 text-sm max-w-md">
                   Agents are collaborating across the network, processing tasks and learning from each other
                 </p>
+                <Link href="/swarm/live">
+                  <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Live Visualization
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>

@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SwarmViz from "./pages/SwarmViz";
+import SwarmVisualization from "./pages/SwarmVisualization";
 import Dashboard from "./pages/Dashboard";
 import Marketing from "./pages/Marketing";
 import BuildPass from "./pages/BuildPass";
@@ -16,6 +17,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path="/swarm" component={SwarmViz} />
+      <Route path="/swarm/live" component={SwarmVisualization} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/marketing" component={Marketing} />
       <Route path="/build" component={BuildPass} />
