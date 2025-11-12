@@ -34,12 +34,23 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        {/* Animated Background */}
+        {/* Video Background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -inset-[10px] opacity-50">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse"></div>
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          >
+            <source src="/aymen-aymenos-promo.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-blue-950/80 to-slate-900/80"></div>
+          {/* Animated accent orbs */}
+          <div className="absolute -inset-[10px] opacity-30">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
           </div>
         </div>
 
