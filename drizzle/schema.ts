@@ -285,6 +285,12 @@ export const userProfiles = mysqlTable("userProfiles", {
   skillTags: text("skillTags"), // JSON array of user skills
   contributionScore: int("contributionScore").default(0).notNull(),
   tasksCompleted: int("tasksCompleted").default(0).notNull(),
+  // Kids Mode & Universal Empowerment fields
+  age: int("age"),
+  isKidsMode: int("isKidsMode").default(0).notNull(), // 0 = adult, 1 = kids mode
+  parentUserId: int("parentUserId").references(() => users.id),
+  experiencePoints: int("experiencePoints").default(0).notNull(),
+  level: int("level").default(1).notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
@@ -424,3 +430,121 @@ export const contributionCredits = mysqlTable("contributionCredits", {
 
 export type ContributionCredit = typeof contributionCredits.$inferSelect;
 export type InsertContributionCredit = typeof contributionCredits.$inferInsert;
+
+
+// Kids Mode & Universal Empowerment Tables (userProfiles merged above)
+
+export const achievements = mysqlTable("achievements", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  icon: varchar("icon", { length: 100 }),
+  category: varchar("category", { length: 100 }), // learning, building, collaboration, etc.
+  points: int("points").default(0).notNull(),
+  requirement: text("requirement"), // JSON describing unlock conditions
+  isKidsFriendly: int("isKidsFriendly").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const userAchievements = mysqlTable("userAchievements", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  achievementId: int("achievementId").notNull().references(() => achievements.id),
+  unlockedAt: timestamp("unlockedAt").defaultNow().notNull(),
+});
+
+export const learningPaths = mysqlTable("learningPaths", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  category: varchar("category", { length: 100 }), // math, science, coding, art, etc.
+  difficulty: varchar("difficulty", { length: 50 }), // beginner, intermediate, advanced
+  ageGroup: varchar("ageGroup", { length: 50 }), // 12-14, 15-17, 18+, all
+  estimatedHours: int("estimatedHours"),
+  icon: varchar("icon", { length: 100 }),
+  color: varchar("color", { length: 20 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const learningModules = mysqlTable("learningModules", {
+  id: int("id").autoincrement().primaryKey(),
+  pathId: int("pathId").notNull().references(() => learningPaths.id),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  content: text("content"), // JSON with lessons, quizzes, activities
+  orderIndex: int("orderIndex").notNull(),
+  pointsReward: int("pointsReward").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const userProgress = mysqlTable("userProgress", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  moduleId: int("moduleId").notNull().references(() => learningModules.id),
+  status: varchar("status", { length: 50 }).default("not_started").notNull(), // not_started, in_progress, completed
+  progressPercent: int("progressPercent").default(0).notNull(),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const dailyChallenges = mysqlTable("dailyChallenges", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  taskType: varchar("taskType", { length: 100 }), // build, learn, collaborate, create
+  difficulty: varchar("difficulty", { length: 50 }),
+  pointsReward: int("pointsReward").default(0).notNull(),
+  date: timestamp("date").notNull(),
+  isKidsFriendly: int("isKidsFriendly").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const userChallenges = mysqlTable("userChallenges", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  challengeId: int("challengeId").notNull().references(() => dailyChallenges.id),
+  status: varchar("status", { length: 50 }).default("active").notNull(), // active, completed, expired
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const projectShowcase = mysqlTable("projectShowcase", {
+  id: int("id").autoincrement().primaryKey(),
+  projectId: int("projectId").notNull().references(() => projects.id),
+  userId: int("userId").notNull().references(() => users.id),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  thumbnailUrl: varchar("thumbnailUrl", { length: 500 }),
+  isKidsFriendly: int("isKidsFriendly").default(1).notNull(),
+  likes: int("likes").default(0).notNull(),
+  views: int("views").default(0).notNull(),
+  featured: int("featured").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const communityPosts = mysqlTable("communityPosts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  title: varchar("title", { length: 255 }),
+  content: text("content").notNull(),
+  category: varchar("category", { length: 100 }),
+  isKidsFriendly: int("isKidsFriendly").default(1).notNull(),
+  isModerated: int("isModerated").default(0).notNull(),
+  likes: int("likes").default(0).notNull(),
+  replies: int("replies").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const parentalControls = mysqlTable("parentalControls", {
+  id: int("id").autoincrement().primaryKey(),
+  parentUserId: int("parentUserId").notNull().references(() => users.id),
+  childUserId: int("childUserId").notNull().references(() => users.id),
+  dailyTimeLimit: int("dailyTimeLimit"), // minutes per day
+  allowedCategories: text("allowedCategories"), // JSON array
+  contentFilterLevel: varchar("contentFilterLevel", { length: 50 }).default("strict").notNull(),
+  requireApprovalForProjects: int("requireApprovalForProjects").default(1).notNull(),
+  allowCommunityAccess: int("allowCommunityAccess").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});

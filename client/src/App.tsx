@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import KidsMode from "./pages/KidsMode";
 import SwarmViz from "./pages/SwarmViz";
 import SwarmVisualization from "./pages/SwarmVisualization";
 import Dashboard from "./pages/Dashboard";
@@ -22,7 +23,8 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/marketing" component={Marketing} />
       <Route path="/build" component={BuildPass} />
-      <Route path="/agents" component={Agents} />
+      <Route path={"/"} component={Home} />
+      <Route path={"/kids"} component={KidsMode} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

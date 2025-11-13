@@ -128,6 +128,15 @@ export default function Home() {
                     Dashboard
                   </Button>
                 </Link>
+                <Link href="/kids">
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="border-yellow-500/50 text-yellow-300 hover:bg-yellow-500/10 text-lg px-8 py-6"
+                  >
+                    🎮 Kids Mode
+                  </Button>
+                </Link>
               </>
             ) : (
               <>

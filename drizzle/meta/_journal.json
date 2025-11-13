@@ -29,6 +29,13 @@
       "when": 1762753538758,
       "tag": "0003_loose_songbird",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1763071213596,
+      "tag": "0004_heavy_loners",
+      "breakpoints": true
     }
   ]
 }
