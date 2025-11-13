@@ -2,8 +2,8 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Sparkles, Rocket, Star, Trophy, Book, Gamepad2, Users, Target } from "lucide-react";
-import { Link } from "wouter";
+import { Sparkles, Rocket, Star, Trophy, Book, Gamepad2, Users, Target, Zap } from "lucide-react";
+import { Link, useLocation } from "wouter";
 
 /**
  * Kids Mode - Gamified learning environment for children (age 12+)
@@ -11,6 +11,7 @@ import { Link } from "wouter";
  */
 export default function KidsMode() {
   const { user, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
   
   // TODO: Fetch user profile with kids mode status
   // const { data: profile } = trpc.userProfile.get.useQuery();
@@ -128,6 +129,36 @@ export default function KidsMode() {
             <Rocket className="w-16 h-16 text-pink-300 mb-4" />
             <h4 className="text-2xl font-bold text-white mb-2">Build a Project</h4>
             <p className="text-white/90">Create something amazing with AI help</p>
+          </Card>
+        </div>
+
+        {/* Multiplayer Challenges */}
+        <div className="grid grid-cols-1 gap-6 mb-12">
+          <Card 
+            onClick={() => setLocation("/multiplayer")}
+            className="bg-gradient-to-r from-blue-500 to-cyan-500 border-none p-8 hover:scale-[1.02] transition-transform cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Users className="w-10 h-10 text-white" />
+                  <h3 className="text-3xl font-bold text-white">Team Up & Solve Challenges!</h3>
+                </div>
+                <p className="text-white/90 text-lg mb-4">
+                  Join friends or AI teammates to solve coding, math, science, and logic puzzles together in real-time!
+                </p>
+                <div className="flex items-center gap-4">
+                  <Button className="bg-white text-blue-600 hover:bg-white/90 font-bold">
+                    <Zap className="h-5 w-5 mr-2" />
+                    Start Team Challenge
+                  </Button>
+                  <span className="text-white font-bold">🎮 10+ Multiplayer Challenges Available</span>
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <div className="text-8xl">🤝</div>
+              </div>
+            </div>
           </Card>
         </div>
 

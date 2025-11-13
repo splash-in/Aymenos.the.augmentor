@@ -548,3 +548,126 @@ export const parentalControls = mysqlTable("parentalControls", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
+
+
+// Multiplayer Challenges - Real-Time Collaborative Problem Solving
+
+export const multiplayerChallenges = mysqlTable("multiplayerChallenges", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  challengeType: varchar("challengeType", { length: 100 }).notNull(), // coding, math, science, art, story, logic
+  difficulty: varchar("difficulty", { length: 50 }).default("medium").notNull(), // easy, medium, hard, expert
+  minTeamSize: int("minTeamSize").default(2).notNull(),
+  maxTeamSize: int("maxTeamSize").default(4).notNull(),
+  estimatedMinutes: int("estimatedMinutes").default(30).notNull(),
+  pointsReward: int("pointsReward").default(100).notNull(),
+  problemStatement: text("problemStatement").notNull(), // The challenge description
+  successCriteria: text("successCriteria"), // JSON defining completion requirements
+  hints: text("hints"), // JSON array of progressive hints
+  isKidsFriendly: int("isKidsFriendly").default(1).notNull(),
+  ageGroup: varchar("ageGroup", { length: 50 }).default("12+").notNull(),
+  tags: text("tags"), // JSON array of tags
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type MultiplayerChallenge = typeof multiplayerChallenges.$inferSelect;
+export type InsertMultiplayerChallenge = typeof multiplayerChallenges.$inferInsert;
+
+export const challengeRooms = mysqlTable("challengeRooms", {
+  id: int("id").autoincrement().primaryKey(),
+  challengeId: int("challengeId").notNull().references(() => multiplayerChallenges.id),
+  roomCode: varchar("roomCode", { length: 20 }).notNull().unique(), // Shareable room code
+  hostUserId: int("hostUserId").notNull().references(() => users.id),
+  status: varchar("status", { length: 50 }).default("waiting").notNull(), // waiting, active, completed, abandoned
+  currentParticipants: int("currentParticipants").default(0).notNull(),
+  maxParticipants: int("maxParticipants").default(4).notNull(),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  totalScore: int("totalScore").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ChallengeRoom = typeof challengeRooms.$inferSelect;
+export type InsertChallengeRoom = typeof challengeRooms.$inferInsert;
+
+export const roomParticipants = mysqlTable("roomParticipants", {
+  id: int("id").autoincrement().primaryKey(),
+  roomId: int("roomId").notNull().references(() => challengeRooms.id),
+  userId: int("userId").references(() => users.id), // null for AI agents
+  agentId: int("agentId").references(() => agents.id), // null for human users
+  participantType: varchar("participantType", { length: 50 }).notNull(), // human, ai_agent
+  role: varchar("role", { length: 50 }).default("member").notNull(), // host, member, observer
+  displayName: varchar("displayName", { length: 100 }).notNull(),
+  avatarColor: varchar("avatarColor", { length: 20 }),
+  isOnline: int("isOnline").default(1).notNull(),
+  contributionScore: int("contributionScore").default(0).notNull(),
+  joinedAt: timestamp("joinedAt").defaultNow().notNull(),
+  leftAt: timestamp("leftAt"),
+});
+
+export type RoomParticipant = typeof roomParticipants.$inferSelect;
+export type InsertRoomParticipant = typeof roomParticipants.$inferInsert;
+
+export const collaborativeSolutions = mysqlTable("collaborativeSolutions", {
+  id: int("id").autoincrement().primaryKey(),
+  roomId: int("roomId").notNull().references(() => challengeRooms.id),
+  solutionType: varchar("solutionType", { length: 100 }).notNull(), // code, text, drawing, formula
+  content: text("content").notNull(), // The actual solution content
+  version: int("version").default(1).notNull(), // Version number for tracking edits
+  lastEditedBy: int("lastEditedBy"), // participantId who made last edit
+  isComplete: int("isComplete").default(0).notNull(),
+  qualityScore: int("qualityScore"), // AI-evaluated quality (0-100)
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CollaborativeSolution = typeof collaborativeSolutions.$inferSelect;
+export type InsertCollaborativeSolution = typeof collaborativeSolutions.$inferInsert;
+
+export const teamProgress = mysqlTable("teamProgress", {
+  id: int("id").autoincrement().primaryKey(),
+  roomId: int("roomId").notNull().references(() => challengeRooms.id),
+  milestone: varchar("milestone", { length: 255 }).notNull(),
+  description: text("description"),
+  completedBy: int("completedBy"), // participantId who completed this milestone
+  progressPercent: int("progressPercent").default(0).notNull(),
+  pointsEarned: int("pointsEarned").default(0).notNull(),
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type TeamProgress = typeof teamProgress.$inferSelect;
+export type InsertTeamProgress = typeof teamProgress.$inferInsert;
+
+export const challengeChat = mysqlTable("challengeChat", {
+  id: int("id").autoincrement().primaryKey(),
+  roomId: int("roomId").notNull().references(() => challengeRooms.id),
+  participantId: int("participantId").notNull().references(() => roomParticipants.id),
+  messageType: varchar("messageType", { length: 50 }).default("text").notNull(), // text, emoji, system, hint
+  content: text("content").notNull(),
+  isFiltered: int("isFiltered").default(0).notNull(), // Content moderation flag
+  replyToId: int("replyToId"), // For threaded conversations
+  reactions: text("reactions"), // JSON object of emoji reactions
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ChallengeChat = typeof challengeChat.$inferSelect;
+export type InsertChallengeChat = typeof challengeChat.$inferInsert;
+
+export const challengeCompletions = mysqlTable("challengeCompletions", {
+  id: int("id").autoincrement().primaryKey(),
+  roomId: int("roomId").notNull().references(() => challengeRooms.id),
+  challengeId: int("challengeId").notNull().references(() => multiplayerChallenges.id),
+  teamScore: int("teamScore").notNull(),
+  completionTime: int("completionTime").notNull(), // seconds taken
+  hintsUsed: int("hintsUsed").default(0).notNull(),
+  perfectSolution: int("perfectSolution").default(0).notNull(),
+  teamworkRating: int("teamworkRating"), // 1-5 stars
+  funRating: int("funRating"), // 1-5 stars
+  completedAt: timestamp("completedAt").defaultNow().notNull(),
+});
+
+export type ChallengeCompletion = typeof challengeCompletions.$inferSelect;
+export type InsertChallengeCompletion = typeof challengeCompletions.$inferInsert;

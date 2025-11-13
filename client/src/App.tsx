@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard";
 import Marketing from "./pages/Marketing";
 import BuildPass from "./pages/BuildPass";
 import Agents from "./pages/Agents";
+import MultiplayerChallenges from "./pages/MultiplayerChallenges";
+import CollaborationRoom from "./pages/CollaborationRoom";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -25,6 +27,8 @@ function Router() {
       <Route path="/build" component={BuildPass} />
       <Route path={"/"} component={Home} />
       <Route path={"/kids"} component={KidsMode} />
+      <Route path="/multiplayer" component={MultiplayerChallenges} />
+      <Route path="/multiplayer/room/:roomCode" component={CollaborationRoom} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

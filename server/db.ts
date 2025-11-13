@@ -22,7 +22,21 @@ import {
   InsertGovernanceProposal,
   InsertGovernanceVote,
   InsertAuditTrail,
-  InsertUserInteraction
+  InsertUserInteraction,
+  multiplayerChallenges,
+  challengeRooms,
+  roomParticipants,
+  collaborativeSolutions,
+  teamProgress,
+  challengeChat,
+  challengeCompletions,
+  InsertMultiplayerChallenge,
+  InsertChallengeRoom,
+  InsertRoomParticipant,
+  InsertCollaborativeSolution,
+  InsertTeamProgress,
+  InsertChallengeChat,
+  InsertChallengeCompletion
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -326,4 +340,73 @@ export async function getUserProjectInteractions(userId: number, projectId: numb
   return await db.select().from(userInteractions)
     .where(and(eq(userInteractions.userId, userId), eq(userInteractions.projectId, projectId)))
     .orderBy(userInteractions.createdAt);
+}
+
+
+// ===== Multiplayer Challenges =====
+
+export async function createMultiplayerChallenge(challenge: InsertMultiplayerChallenge) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(multiplayerChallenges).values(challenge);
+  return result;
+}
+
+export async function getAllMultiplayerChallenges() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(multiplayerChallenges);
+}
+
+export async function getMultiplayerChallengeById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(multiplayerChallenges).where(eq(multiplayerChallenges.id, id)).limit(1);
+  return result[0] || null;
+}
+
+export async function createChallengeRoom(room: InsertChallengeRoom) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(challengeRooms).values(room);
+  return result;
+}
+
+export async function getChallengeRoomByCode(roomCode: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(challengeRooms).where(eq(challengeRooms.roomCode, roomCode)).limit(1);
+  return result[0] || null;
+}
+
+export async function addRoomParticipant(participant: InsertRoomParticipant) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(roomParticipants).values(participant);
+  return result;
+}
+
+export async function getRoomParticipants(roomId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(roomParticipants).where(eq(roomParticipants.roomId, roomId));
+}
+
+export async function updateRoomStatus(roomId: number, status: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(challengeRooms).set({ status }).where(eq(challengeRooms.id, roomId));
+}
+
+export async function getActiveChallengeRooms() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(challengeRooms).where(eq(challengeRooms.status, "active"));
+}
+
+export async function completeChallenge(completion: InsertChallengeCompletion) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(challengeCompletions).values(completion);
+  return result;
 }

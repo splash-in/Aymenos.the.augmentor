@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
 import { invokeLLM } from "./_core/llm";
@@ -572,6 +573,131 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  // Multiplayer Challenges - Real-Time Collaborative Problem Solving
+  multiplayer: router({
+    // Get all challenges
+    getChallenges: publicProcedure.query(async () => {
+      return await db.getAllMultiplayerChallenges();
+    }),
+
+    // Get challenge by ID
+    getChallenge: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getMultiplayerChallengeById(input.id);
+      }),
+
+    // Create a new challenge room
+    createRoom: protectedProcedure
+      .input(z.object({
+        challengeId: z.number(),
+        maxParticipants: z.number().default(4),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const result = await db.createChallengeRoom({
+          challengeId: input.challengeId,
+          roomCode,
+          hostUserId: ctx.user.id,
+          status: "waiting",
+          currentParticipants: 0,
+          maxParticipants: input.maxParticipants,
+        });
+        return { roomCode, roomId: Number((result as any).insertId) };
+      }),
+
+    // Join a challenge room
+    joinRoom: protectedProcedure
+      .input(z.object({
+        roomCode: z.string(),
+        displayName: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const room = await db.getChallengeRoomByCode(input.roomCode);
+        if (!room) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Room not found" });
+        }
+
+        if (room.status !== "waiting" && room.status !== "active") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Room is not available" });
+        }
+
+        if (room.currentParticipants >= room.maxParticipants) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Room is full" });
+        }
+
+        const avatarColors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", "#98D8C8", "#F7DC6F", "#BB8FCE", "#85C1E2"];
+        const avatarColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+
+        const result = await db.addRoomParticipant({
+          roomId: room.id,
+          userId: ctx.user.id,
+          participantType: "human",
+          role: room.hostUserId === ctx.user.id ? "host" : "member",
+          displayName: input.displayName || ctx.user.name || "Player",
+          avatarColor,
+          isOnline: 1,
+          contributionScore: 0,
+        });
+
+        // Update room participant count
+        await db.updateRoomStatus(room.id, room.status);
+
+        return {
+          roomCode: input.roomCode,
+          participantId: Number((result as any).insertId),
+          room,
+        };
+      }),
+
+    // Get room details
+    getRoom: publicProcedure
+      .input(z.object({ roomCode: z.string() }))
+      .query(async ({ input }) => {
+        const room = await db.getChallengeRoomByCode(input.roomCode);
+        if (!room) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Room not found" });
+        }
+
+        const participants = await db.getRoomParticipants(room.id);
+        const challenge = await db.getMultiplayerChallengeById(room.challengeId);
+
+        return { room, participants, challenge };
+      }),
+
+    // Get active rooms
+    getActiveRooms: publicProcedure.query(async () => {
+      return await db.getActiveChallengeRooms();
+    }),
+
+    // Complete challenge
+    completeChallenge: protectedProcedure
+      .input(z.object({
+        roomId: z.number(),
+        challengeId: z.number(),
+        teamScore: z.number(),
+        completionTime: z.number(),
+        hintsUsed: z.number().default(0),
+        perfectSolution: z.boolean().default(false),
+      }))
+      .mutation(async ({ input }) => {
+        await db.completeChallenge({
+          roomId: input.roomId,
+          challengeId: input.challengeId,
+          teamScore: input.teamScore,
+          completionTime: input.completionTime,
+          hintsUsed: input.hintsUsed,
+          perfectSolution: input.perfectSolution ? 1 : 0,
+        });
+
+        // Update room status
+        await db.updateRoomStatus(input.roomId, "completed");
+
+        return { success: true };
+      }),
+  }),
+
 });
 
 export type AppRouter = typeof appRouter;
