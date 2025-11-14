@@ -411,8 +411,8 @@
 - [ ] Build age-appropriate team matching
 
 ## API Documentation (Swagger/OpenAPI)
-- [ ] Install trpc-openapi and swagger-ui-express
-- [ ] Configure OpenAPI metadata for tRPC procedures
-- [ ] Create Swagger UI endpoint at /api/docs
-- [ ] Generate OpenAPI JSON specification
-- [ ] Push all code to GitHub
+- [x] Install trpc-openapi and swagger-ui-express
+- [x] Configure OpenAPI metadata for tRPC procedures
+- [x] Create Swagger UI endpoint at /api/docs
+- [x] Generate OpenAPI JSON specification
+- [x] Push all code to GitHub
