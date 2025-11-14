@@ -409,3 +409,10 @@
 - [ ] Create AI moderator agents for chat monitoring
 - [ ] Implement parental controls for multiplayer access
 - [ ] Build age-appropriate team matching
+
+## API Documentation (Swagger/OpenAPI)
+- [ ] Install trpc-openapi and swagger-ui-express
+- [ ] Configure OpenAPI metadata for tRPC procedures
+- [ ] Create Swagger UI endpoint at /api/docs
+- [ ] Generate OpenAPI JSON specification
+- [ ] Push all code to GitHub

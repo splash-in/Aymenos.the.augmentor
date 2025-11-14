@@ -8,6 +8,8 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { initializeCollaborationServer } from "../collaboration";
+import swaggerUi from "swagger-ui-express";
+import { openApiDocument } from "./openapi";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -36,6 +38,17 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // Swagger API Documentation
+  app.get("/api/openapi.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(openApiDocument);
+  });
+  
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument, {
+    customSiteTitle: "AYMENOS API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+  }));
+
   // tRPC API
   app.use(
     "/api/trpc",
