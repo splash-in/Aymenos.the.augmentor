@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -17,6 +17,16 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  // Compliance fields for COPPA/GDPR
+  birthdate: timestamp("birthdate"), // For age verification
+  accountType: mysqlEnum("accountType", ["adult", "minor_with_consent", "minor_pending"]).default("adult"),
+  parentalConsentGiven: boolean("parentalConsentGiven").default(false),
+  parentalConsentDate: timestamp("parentalConsentDate"),
+  parentEmail: varchar("parentEmail", { length: 320 }), // Parent/guardian email for minors
+  emailVerified: boolean("emailVerified").default(false),
+  emailVerifiedAt: timestamp("emailVerifiedAt"),
+  dataProcessingConsent: boolean("dataProcessingConsent").default(false),
+  marketingConsent: boolean("marketingConsent").default(false),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -671,3 +681,76 @@ export const challengeCompletions = mysqlTable("challengeCompletions", {
 
 export type ChallengeCompletion = typeof challengeCompletions.$inferSelect;
 export type InsertChallengeCompletion = typeof challengeCompletions.$inferInsert;
+
+/**
+ * Parental Consent Requests - COPPA/GDPR compliance for minors
+ */
+export const parentalConsentRequests = mysqlTable("parentalConsentRequests", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // Minor user requesting consent
+  parentEmail: varchar("parentEmail", { length: 320 }).notNull(),
+  verificationToken: varchar("verificationToken", { length: 64 }).notNull().unique(),
+  status: mysqlEnum("status", ["pending", "approved", "rejected", "expired"]).default("pending").notNull(),
+  requestedAt: timestamp("requestedAt").defaultNow().notNull(),
+  respondedAt: timestamp("respondedAt"),
+  expiresAt: timestamp("expiresAt").notNull(), // 7 days from request
+  ipAddress: varchar("ipAddress", { length: 45 }), // For audit trail
+  userAgent: text("userAgent"), // For audit trail
+});
+
+export type ParentalConsentRequest = typeof parentalConsentRequests.$inferSelect;
+export type InsertParentalConsentRequest = typeof parentalConsentRequests.$inferInsert;
+
+/**
+ * Email Verifications - For email verification flow
+ */
+export const emailVerifications = mysqlTable("emailVerifications", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  verificationToken: varchar("verificationToken", { length: 64 }).notNull().unique(),
+  verified: boolean("verified").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  verifiedAt: timestamp("verifiedAt"),
+  expiresAt: timestamp("expiresAt").notNull(), // 24 hours from creation
+});
+
+export type EmailVerification = typeof emailVerifications.$inferSelect;
+export type InsertEmailVerification = typeof emailVerifications.$inferInsert;
+
+/**
+ * Privacy Settings - GDPR data processing preferences
+ */
+export const privacySettings = mysqlTable("privacySettings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  dataProcessingConsent: boolean("dataProcessingConsent").default(false).notNull(),
+  marketingConsent: boolean("marketingConsent").default(false).notNull(),
+  analyticsConsent: boolean("analyticsConsent").default(false).notNull(),
+  thirdPartySharing: boolean("thirdPartySharing").default(false).notNull(),
+  consentVersion: varchar("consentVersion", { length: 20 }).notNull(), // Track policy version
+  consentDate: timestamp("consentDate").defaultNow().notNull(),
+  lastUpdated: timestamp("lastUpdated").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PrivacySettings = typeof privacySettings.$inferSelect;
+export type InsertPrivacySettings = typeof privacySettings.$inferInsert;
+
+/**
+ * Data Access Audit Log - GDPR compliance for tracking data access
+ */
+export const dataAccessLogs = mysqlTable("dataAccessLogs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  accessType: mysqlEnum("accessType", ["view", "export", "delete", "update"]).notNull(),
+  dataCategory: varchar("dataCategory", { length: 100 }).notNull(), // e.g., "profile", "messages", "achievements"
+  accessedBy: int("accessedBy"), // User ID who accessed (for admin access)
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  userAgent: text("userAgent"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  details: text("details"), // JSON with additional context
+});
+
+export type DataAccessLog = typeof dataAccessLogs.$inferSelect;
+export type InsertDataAccessLog = typeof dataAccessLogs.$inferInsert;
+// ... (schema continues)

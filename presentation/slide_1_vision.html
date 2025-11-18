@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYMENOS - Vision</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a0b2e;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #1a0b2e;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Background image with overlay */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/home/ubuntu/aymenos/slide1_hero.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        /* Dark overlay for text readability */
+        .slide-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 11, 46, 0.8) 0%, rgba(26, 11, 46, 0.6) 50%, rgba(26, 11, 46, 0.8) 100%);
+            z-index: 2;
+        }
+
+        .content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 100%;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 720px;
+        }
+
+        .title {
+            font-size: 72px;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 48px;
+            font-weight: 700;
+            color: #00d9ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .tagline {
+            font-size: 28px;
+            font-weight: 700;
+            color: #e0e7ff;
+            margin-bottom: 60px;
+            max-width: 900px;
+            line-height: 1.4;
+        }
+
+        .quote {
+            font-size: 20px;
+            font-style: italic;
+            color: #e0e7ff;
+            max-width: 800px;
+            line-height: 1.6;
+            opacity: 0.95;
+            border-left: 4px solid #00d9ff;
+            padding-left: 20px;
+        }
+
+        .quote-author {
+            font-size: 16px;
+            color: #8b5cf6;
+            margin-top: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="content">
+            <h1 class="title">AYMENOS</h1>
+            <h2 class="subtitle">L'Augmenteur Universel</h2>
+            <p class="tagline">Augmentez Tout. Construisez le Paradis.</p>
+            <blockquote class="quote">
+                L'avenir de l'humanité n'est pas l'IA contre l'humain.<br>
+                C'est l'IA AVEC l'humain.
+                <div class="quote-author">— Aymen Chaleb, Fondateur</div>
+            </blockquote>
+        </div>
+    </div>
+</body>
+</html>

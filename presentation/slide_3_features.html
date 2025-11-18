@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYMENOS - 4 Piliers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a0b2e;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #1a0b2e;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .pillar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 24px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .pillar-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .pillar-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00d9ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pillar-description {
+            font-size: 14px;
+            color: #e0e7ff;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .pillar-result {
+            font-size: 13px;
+            color: #8b5cf6;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1280px) {
+            .slide-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1 class="slide-title">4 Piliers de la Révolution</h1>
+        
+        <div class="pillars-grid">
+            <div class="pillar">
+                <div class="pillar-icon">🎓</div>
+                <h2 class="pillar-title">Mode Enfants</h2>
+                <p class="pillar-description">
+                    Environnement 100% sûr avec contrôles parentaux avancés. Défis collaboratifs en temps réel avec amis et agents IA. Parcours d'apprentissage personnalisés et adaptatifs.
+                </p>
+                <div class="pillar-result">Résultat: Enfants qui apprennent 3× plus vite</div>
+            </div>
+
+            <div class="pillar">
+                <div class="pillar-icon">🤝</div>
+                <h2 class="pillar-title">Défis Multijoueurs</h2>
+                <p class="pillar-description">
+                    Équipes hybrides: humains + agents IA. Résolution de problèmes impossibles ensemble. Création collaborative en temps réel et compétitions amicales.
+                </p>
+                <div class="pillar-result">Résultat: Ce qu'un seul ne peut faire, une équipe l'accomplit</div>
+            </div>
+
+            <div class="pillar">
+                <div class="pillar-icon">⚡</div>
+                <h2 class="pillar-title">Build Pass™</h2>
+                <p class="pillar-description">
+                    Chaque action enregistrée sur blockchain. Transparence totale et traçabilité. Gouvernance démocratique basée sur les contributions. Votre travail reconnu, votre impact mesuré.
+                </p>
+                <div class="pillar-result">Résultat: Système de mérite transparent et incorruptible</div>
+            </div>
+
+            <div class="pillar">
+                <div class="pillar-icon">🌐</div>
+                <h2 class="pillar-title">Intelligence en Essaim</h2>
+                <p class="pillar-description">
+                    55+ agents qui collaborent comme un super-organisme. Communication inter-agents en temps réel. Spécialisation et coordination automatique. Évolution collective.
+                </p>
+                <div class="pillar-result">Résultat: 1 humain + 1000 agents = Possibilités infinies</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

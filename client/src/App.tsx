@@ -25,8 +25,9 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/marketing" component={Marketing} />
       <Route path="/build" component={BuildPass} />
-      <Route path={"/"} component={Home} />
-      <Route path={"/kids"} component={KidsMode} />
+      <Route path="/agents" component={Agents} />
+      <Route path="/kids-mode" component={KidsMode} />
+      <Route path="/kids" component={KidsMode} />
       <Route path="/multiplayer" component={MultiplayerChallenges} />
       <Route path="/multiplayer/room/:roomCode" component={CollaborationRoom} />
       <Route path={"/404"} component={NotFound} />

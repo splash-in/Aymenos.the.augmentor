@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYMENOS - Rejoignez la Révolution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a0b2e;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #1a0b2e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        .content-left {
+            flex: 0 0 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 640px;
+        }
+
+        .content-left img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .content-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 640px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .main-title {
+            font-size: 40px;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00d9ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #e0e7ff;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .entry-points {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .entry-point {
+            padding: 16px;
+            border-left: 4px solid #8b5cf6;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .entry-point-number {
+            font-size: 12px;
+            color: #8b5cf6;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .entry-point-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #00d9ff;
+            text-transform: uppercase;
+        }
+
+        .entry-point-features {
+            font-size: 13px;
+            color: #e0e7ff;
+            line-height: 1.5;
+        }
+
+        .entry-point-cta {
+            font-size: 12px;
+            color: #8b5cf6;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+
+        .social-section {
+            margin-bottom: 20px;
+        }
+
+        .social-label {
+            font-size: 12px;
+            color: #8b5cf6;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            font-size: 14px;
+            color: #e0e7ff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .social-link::before {
+            margin-right: 6px;
+        }
+
+        .final-slogan {
+            font-size: 18px;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #8b5cf6;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="content-left">
+            <img src="/home/ubuntu/aymenos/slide5_cta.png" alt="Rejoignez la Révolution">
+        </div>
+
+        <div class="content-right">
+            <div class="header">
+                <h1 class="main-title">Rejoignez la Révolution de l'Augmentation</h1>
+                <h2 class="subtitle">L'augmentation commence maintenant</h2>
+                <p class="message">
+                    Vous avez le choix: rester spectateur du futur ou devenir architecte de l'avenir.<br>
+                    AYMENOS vous donne les outils. À vous de construire le paradis.
+                </p>
+            </div>
+
+            <div class="entry-points">
+                <div class="entry-point">
+                    <div class="entry-point-number">1️⃣ Mode Invité</div>
+                    <div class="entry-point-title">Explorez Gratuitement</div>
+                    <div class="entry-point-features">
+                        ✓ Aucune inscription requise<br>
+                        ✓ Découvrez la puissance de l'augmentation<br>
+                        ✓ Démarrez en 30 secondes
+                    </div>
+                    <div class="entry-point-cta">→ Commencez maintenant</div>
+                </div>
+
+                <div class="entry-point">
+                    <div class="entry-point-number">2️⃣ Compte Basique</div>
+                    <div class="entry-point-title">Gratuit Pour Toujours</div>
+                    <div class="entry-point-features">
+                        ✓ Créez votre profil personnalisé<br>
+                        ✓ Sauvegardez vos projets<br>
+                        ✓ Collaborez avec la communauté
+                    </div>
+                    <div class="entry-point-cta">→ Créer un compte</div>
+                </div>
+
+                <div class="entry-point">
+                    <div class="entry-point-number">3️⃣ Compte Complet</div>
+                    <div class="entry-point-title">Fonctionnalités Premium</div>
+                    <div class="entry-point-features">
+                        ✓ Accès illimité à tous les agents<br>
+                        ✓ Défis multijoueurs avancés<br>
+                        ✓ Gouvernance et Build Pass™
+                    </div>
+                    <div class="entry-point-cta">→ Découvrir les plans</div>
+                </div>
+            </div>
+
+            <div class="social-section">
+                <div class="social-label">Suivez-nous</div>
+                <div class="social-links">
+                    <div class="social-link">💬 Discord</div>
+                    <div class="social-link">🐦 Twitter</div>
+                    <div class="social-link">📘 Facebook</div>
+                    <div class="social-link">📸 Instagram</div>
+                    <div class="social-link">💼 LinkedIn</div>
+                </div>
+            </div>
+
+            <div class="final-slogan">
+                Ne remplaçons pas l'humain.<br>
+                Augmentons-le.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

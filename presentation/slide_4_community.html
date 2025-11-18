@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYMENOS - Communauté</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a0b2e;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #1a0b2e;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .slide-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+        }
+
+        .testimonials-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .testimonial {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 16px;
+            border-left: 3px solid #00d9ff;
+        }
+
+        .testimonial-quote {
+            font-size: 14px;
+            color: #e0e7ff;
+            line-height: 1.6;
+            font-style: italic;
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .testimonial-quote::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            font-size: 24px;
+            color: #00d9ff;
+            opacity: 0.5;
+        }
+
+        .testimonial-author {
+            font-size: 13px;
+            font-weight: 700;
+            color: #8b5cf6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .testimonial-role {
+            font-size: 12px;
+            color: #00d9ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metrics-section {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .metric-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 20px;
+            border: 2px solid #8b5cf6;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: #00d9ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #e0e7ff;
+            line-height: 1.4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card:nth-child(1) {
+            border-color: #00d9ff;
+        }
+
+        .metric-card:nth-child(2) {
+            border-color: #8b5cf6;
+        }
+
+        .metric-card:nth-child(3) {
+            border-color: #00d9ff;
+        }
+
+        .metric-card:nth-child(4) {
+            border-color: #8b5cf6;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1 class="slide-title">AYMENOS Transforme Déjà des Vies</h1>
+        
+        <div class="content-wrapper">
+            <div class="testimonials-section">
+                <div class="testimonial">
+                    <div class="testimonial-quote">
+                        AYMENOS a transformé ma façon de créer. Ce qui me prenait des semaines ne prend maintenant que quelques heures, grâce à l'intelligence en essaim.
+                    </div>
+                    <div class="testimonial-author">Sophie L.</div>
+                    <div class="testimonial-role">Designer</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-quote">
+                        Mes enfants apprennent en s'amusant avec les défis collaboratifs. C'est éducatif, sûr et absolument fascinant.
+                    </div>
+                    <div class="testimonial-author">Marc D.</div>
+                    <div class="testimonial-role">Parent</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-quote">
+                        En tant que développeur, j'ai toujours rêvé d'une plateforme où l'IA amplifie mes capacités au lieu de me remplacer. AYMENOS est ce rêve.
+                    </div>
+                    <div class="testimonial-author">Karim B.</div>
+                    <div class="testimonial-role">Ingénieur Logiciel</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-quote">
+                        La gouvernance communautaire change tout. Nous ne sommes pas de simples utilisateurs, nous sommes des co-créateurs.
+                    </div>
+                    <div class="testimonial-author">Elena R.</div>
+                    <div class="testimonial-role">Entrepreneure</div>
+                </div>
+            </div>
+
+            <div class="metrics-section">
+                <div class="metric-card">
+                    <div class="metric-value">10K+</div>
+                    <div class="metric-label">Utilisateurs Actifs</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">500K+</div>
+                    <div class="metric-label">Agents IA Déployés</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">1M+</div>
+                    <div class="metric-label">Tâches Collaboratives</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">98%</div>
+                    <div class="metric-label">Satisfaction Utilisateurs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
